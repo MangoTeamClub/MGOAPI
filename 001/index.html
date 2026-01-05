@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MGO-API|001</title>
+    <style>
+        * { margin: 0; padding: 0; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #000; }
+        img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <img id="image" src="" alt="随机图片">
+
+    <script>
+        // 图片数据库
+        const images = [
+            "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+            "https://images.unsplash.com/photo-1448375240586-882707db888b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+            "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+            "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+            "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+            "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+            "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+        ];
+        
+        // 获取DOM元素
+        const imageEl = document.getElementById('image');
+        
+        // 随机选择图片
+        const randomIndex = Math.floor(Math.random() * images.length);
+        const randomImageUrl = images[randomIndex];
+        
+        // 加载图片
+        imageEl.src = randomImageUrl;
+        
+        // API端点功能
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('api')) {
+            // 返回JSON响应
+            const response = {
+                status: "success",
+                image_url: randomImageUrl,
+                index: randomIndex,
+                total: images.length,
+                timestamp: new Date().toISOString()
+            };
+            
+            // 设置响应内容为JSON
+            document.body.innerHTML = `<pre>${JSON.stringify(response, null, 2)}</pre>`;
+            document.body.style.color = '#fff';
+            document.body.style.padding = '20px';
+            document.body.style.fontFamily = 'monospace';
+            document.body.style.backgroundColor = '#000';
+        }
+    </script>
+</body>
+</html>
