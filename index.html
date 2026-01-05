@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MGO API 管理中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 头部样式 */
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            margin-right: 10px;
+            color: #ffde59;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* 搜索框样式 */
+        .search-section {
+            margin: 2rem 0 3rem;
+        }
+        
+        .search-box {
+            display: flex;
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            overflow: hidden;
+            background: white;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 18px 25px;
+            border: none;
+            font-size: 1.1rem;
+            outline: none;
+        }
+        
+        .search-box button {
+            background: #2575fc;
+            color: white;
+            border: none;
+            padding: 0 30px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box button:hover {
+            background: #1a67e8;
+        }
+        
+        .search-hint {
+            text-align: center;
+            margin-top: 15px;
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        /* API列表样式 */
+        .api-list-section {
+            margin-bottom: 4rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 70px;
+            height: 4px;
+            background: #2575fc;
+            border-radius: 2px;
+        }
+        
+        .api-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .api-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .api-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .api-photo {
+            height: 160px;
+            width: 100%;
+            object-fit: cover;
+            background-color: #f0f3f9;
+        }
+        
+        .api-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .api-id {
+            display: inline-block;
+            background: #e8f4ff;
+            color: #2575fc;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            align-self: flex-start;
+        }
+        
+        .api-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .api-url {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            word-break: break-all;
+            flex-grow: 1;
+        }
+        
+        .api-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+        
+        .btn-details {
+            background: #2575fc;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .btn-details:hover {
+            background: #1a67e8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-copy {
+            background: #f0f3f9;
+            color: #555;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-copy:hover {
+            background: #e4e8f0;
+        }
+        
+        /* 搜索结果提示 */
+        .search-results-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e8f4ff;
+            border-radius: 8px;
+            color: #2575fc;
+            font-weight: 500;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .copyright {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #3498db;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .social-icons a {
+            color: #bdc3c7;
+            transition: color 0.3s;
+        }
+        
+        .social-icons a:hover {
+            color: #3498db;
+        }
+        
+        /* 空状态提示 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .logo h1 {
+                font-size: 2rem;
+            }
+            
+            .search-box {
+                border-radius: 12px;
+                flex-direction: column;
+            }
+            
+            .search-box input, .search-box button {
+                width: 100%;
+                padding: 15px 20px;
+            }
+            
+            .search-box button {
+                border-radius: 0 0 12px 12px;
+            }
+            
+            .api-list {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .api-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部区域 -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-cloud"></i>
+                    <h1>MGO API 管理中心</h1>
+                </div>
+                <p class="tagline">探索、发现并使用我们提供的各种API服务，助力您的应用程序快速开发与部署</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- 搜索区域 -->
+        <section class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="输入API ID或名称进行搜索...">
+                <button id="searchButton">
+                    <i class="fas fa-search"></i> 搜索API
+                </button>
+            </div>
+            <p class="search-hint">您可以通过API的ID或名称进行搜索，例如: "001" 或 "用户管理"</p>
+        </section>
+
+        <!-- API列表区域 -->
+        <section class="api-list-section">
+            <h2 class="section-title">API 列表</h2>
+            <div id="searchResultsInfo" class="search-results-info" style="display: none;">
+                搜索到 <span id="resultCount">0</span> 个结果
+            </div>
+            <div class="api-list" id="apiList">
+                <!-- API卡片将通过JavaScript动态生成 -->
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚区域 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="copyright">
+                    <p>© 2022-2026 MGO API 管理中心 版权所有</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#">使用条款</a>
+                    <a href="#">隐私政策</a>
+                    <a href="#">API文档</a>
+                    <a href="#">支持与帮助</a>
+                    <a href="#">联系我们</a>
+                </div>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // API数据
+        const apiData = [
+            {
+                id: "001",
+                name: "用户管理 API",
+                photo: "https://images.unsplash.com/photo-1557862921-37829c790f19?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+                url: "https://api.mgo.com/v1/users"
+            },
+            {
+                id: "002",
+                name: "支付处理 API",
+                photo: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-1.2.1&auto=format&fit=crop&w-600&q=80",
+                url: "https://api.mgo.com/v1/payments"
+            },
+            {
+                id: "003",
+                name: "地理位置 API",
+                photo: "https://images.unsplash.com/photo-1534531173927-aeb928d54385?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+                url: "https://api.mgo.com/v1/geolocation"
+            },
+            {
+                id: "004",
+                name: "图像处理 API",
+                photo: "https://images.unsplash.com/photo-1554080353-a576cf803bda?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+                url: "https://api.mgo.com/v1/images"
+            },
+            {
+                id: "005",
+                name: "消息推送 API",
+                photo: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+                url: "https://api.mgo.com/v1/notifications"
+            },
+            {
+                id: "006",
+                name: "数据分析 API",
+                photo: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+                url: "https://api.mgo.com/v1/analytics"
+            },
+            {
+                id: "007",
+                name: "文件存储 API",
+                photo: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+                url: "https://api.mgo.com/v1/storage"
+            },
+            {
+                id: "008",
+                name: "身份验证 API",
+                photo: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+                url: "https://api.mgo.com/v1/auth"
+            }
+        ];
+
+        // DOM元素
+        const apiListElement = document.getElementById('apiList');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const searchResultsInfo = document.getElementById('searchResultsInfo');
+        const resultCountElement = document.getElementById('resultCount');
+
+        // 初始加载所有API
+        renderApiList(apiData);
+
+        // 搜索功能
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // 搜索函数
+        function performSearch() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            if (searchTerm === '') {
+                renderApiList(apiData);
+                searchResultsInfo.style.display = 'none';
+                return;
+            }
+            
+            const filteredApis = apiData.filter(api => 
+                api.id.toLowerCase().includes(searchTerm) || 
+                api.name.toLowerCase().includes(searchTerm)
+            );
+            
+            renderApiList(filteredApis);
+            
+            // 显示搜索结果信息
+            if (filteredApis.length > 0) {
+                resultCountElement.textContent = filteredApis.length;
+                searchResultsInfo.style.display = 'block';
+            } else {
+                searchResultsInfo.style.display = 'none';
+            }
+        }
+
+        // 渲染API列表
+        function renderApiList(apis) {
+            if (apis.length === 0) {
+                apiListElement.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <p>未找到匹配的API，请尝试其他搜索词</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            apis.forEach(api => {
+                html += `
+                    <div class="api-card">
+                        <img src="${api.photo}" alt="${api.name}" class="api-photo">
+                        <div class="api-info">
+                            <span class="api-id">ID: ${api.id}</span>
+                            <h3 class="api-name">${api.name}</h3>
+                            <p class="api-url">${api.url}</p>
+                            <div class="api-actions">
+                                <a href="${api.url}" target="_blank" class="btn-details">
+                                    <i class="fas fa-external-link-alt"></i> 查看文档
+                                </a>
+                                <button class="btn-copy" onclick="copyToClipboard('${api.url}')">
+                                    <i class="fas fa-copy"></i> 复制
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            apiListElement.innerHTML = html;
+        }
+
+        // 复制URL到剪贴板
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // 显示复制成功的提示
+                const originalButtonText = event.target.innerHTML;
+                event.target.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                event.target.style.background = '#4CAF50';
+                event.target.style.color = 'white';
+                
+                setTimeout(() => {
+                    event.target.innerHTML = originalButtonText;
+                    event.target.style.background = '';
+                    event.target.style.color = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败: ', err);
+            });
+        }
+
+        // 添加一些交互效果
+        searchInput.addEventListener('focus', function() {
+            this.parentElement.style.boxShadow = '0 8px 25px rgba(37, 117, 252, 0.2)';
+        });
+        
+        searchInput.addEventListener('blur', function() {
+            this.parentElement.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.1)';
+        });
+    </script>
+</body>
+</html>
